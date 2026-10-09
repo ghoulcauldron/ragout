@@ -1,0 +1,215 @@
+:root {
+  --bath: #26292b;          /* page = the dye bath; JS darkens it toward the current dye */
+  --dye: #24365c;
+  --poly: #e7e6e0;          /* undyed polyester white */
+  --muted: rgba(231, 230, 224, 0.7);
+  --thread: #efe9da;        /* sashiko cotton */
+  --display: "Big Shoulders Display", "Arial Narrow", "Helvetica Neue", Impact, sans-serif;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bath); scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  color: var(--poly);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+#bath {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100lvh;
+  display: block;
+  z-index: 0;
+  touch-action: pan-y;
+}
+.no-webgl #bath { display: none; }
+.no-webgl body {
+  background:
+    radial-gradient(60% 40% at 50% 30%, color-mix(in srgb, var(--dye) 70%, #ddd) 0%, transparent 70%),
+    var(--bath);
+  background-attachment: fixed;
+}
+
+main { position: relative; z-index: 1; }
+
+/* ---------- panels: text sits low on phones, left on wide screens ---------- */
+.panel {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.copy {
+  width: 100%;
+  padding: 7rem 1.5rem calc(2.75rem + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, var(--bath) 0%, color-mix(in srgb, var(--bath) 88%, transparent) 62%, transparent 100%);
+}
+.copy > * { max-width: 34rem; }
+
+h1, h2 { font-family: var(--display); font-weight: 900; margin: 0; }
+h2 {
+  font-size: clamp(2.75rem, 12vw, 5.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.005em;
+  margin-bottom: 1rem;
+  text-wrap: balance;
+}
+p { margin: 0 0 1rem; }
+
+/* ---------- hero ---------- */
+.hero { justify-content: space-between; }
+.wordmark {
+  font-size: clamp(6rem, 29vw, 17rem);
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  padding: calc(1.25rem + env(safe-area-inset-top, 0px)) 1rem 0;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+.defs { margin: 0 0 1.25rem; display: grid; gap: 0.9rem; }
+.defs dt { font-weight: 500; font-size: 1.25rem; }
+.defs dt .say { font-style: italic; font-weight: 400; color: var(--muted); margin-left: 0.35rem; }
+.defs dd { margin: 0.1rem 0 0; color: var(--muted); line-height: 1.45; }
+.lede { font-size: 1.3rem; line-height: 1.45; }
+.hint { font-style: italic; color: var(--muted); font-size: 1rem; margin: 0; }
+
+/* ---------- process ---------- */
+.num {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  width: 2.1rem; height: 2.1rem;
+  display: grid; place-items: center;
+  border: 2px dashed var(--thread);   /* a sashiko running stitch */
+  border-radius: 50%;
+  margin-bottom: 0.9rem;
+}
+
+/* ---------- colorways ---------- */
+.swatches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+.swatch {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 0.7rem;
+  align-items: center;
+  padding: 0.6rem 0.7rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(231, 230, 224, 0.18);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.swatch .chip {
+  grid-row: 1 / 3;
+  width: 2.25rem; height: 2.25rem;
+  border-radius: 2px;
+  background:
+    radial-gradient(circle at 30% 35%, color-mix(in srgb, var(--c) 55%, #e7e6e0) 0 18%, transparent 40%),
+    radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--c) 70%, black) 0 22%, transparent 48%),
+    var(--c);
+}
+.sw-name { font-weight: 500; font-size: 1rem; line-height: 1.2; }
+.sw-after { font-style: italic; font-size: 0.85rem; color: var(--muted); line-height: 1.25; }
+.swatch[aria-pressed="true"] { border: 2px dashed var(--thread); padding: calc(0.6rem - 1px) calc(0.7rem - 1px); }
+
+/* ---------- pH bath ---------- */
+.ph { margin-top: 1.25rem; }
+.ph-top { display: flex; align-items: center; gap: 1rem; }
+.strip {
+  width: 0.9rem; height: 5.5rem;
+  background: #ece9df;
+  border-radius: 2px;
+  display: flex; align-items: flex-end;
+  padding: 0.3rem 0.15rem;
+  flex: none;
+}
+.pad { display: block; width: 100%; height: 1.6rem; border-radius: 1px; transition: background 0.8s ease; }
+.ph-read { margin: 0; font-family: var(--display); font-weight: 900; line-height: 0.85; }
+.ph-unit { font-size: 1.6rem; font-weight: 700; color: var(--muted); }
+.ph-val { font-size: clamp(4.5rem, 20vw, 6.5rem); font-variant-numeric: tabular-nums; }
+.ph-status { color: var(--muted); min-height: 3.2em; margin-top: 0.75rem; }
+.ph-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+button#phDose, .cta {
+  font: 500 1rem/1 var(--serif);
+  color: #1b1a18;
+  background: var(--thread);
+  border: none;
+  border-radius: 2px;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+button#phDose:disabled { opacity: 0.4; cursor: default; }
+button.quiet {
+  font: 400 1rem/1 var(--serif);
+  color: var(--poly);
+  background: none;
+  border: 1px solid rgba(231, 230, 224, 0.35);
+  border-radius: 2px;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+}
+
+/* ---------- hangtag ---------- */
+.tag {
+  position: relative;
+  margin: 0;
+  background: #e3dccb;
+  color: #2a2722;
+  padding: 2.75rem 1.4rem 1.4rem;
+  border-radius: 4px 4px 4px 4px;
+  clip-path: polygon(14% 0, 86% 0, 100% 7%, 100% 100%, 0 100%, 0 7%);
+  font-size: 1rem;
+  line-height: 1.55;
+  transform: rotate(-1.5deg);
+}
+.eyelet {
+  position: absolute; top: 0.9rem; left: 50%;
+  width: 0.9rem; height: 0.9rem; margin-left: -0.45rem;
+  border-radius: 50%;
+  background: var(--bath);
+  box-shadow: 0 0 0 3px #b9ae95;
+}
+.tag-head { font-family: var(--display); font-weight: 900; font-size: 1.9rem; line-height: 1; text-align: center; margin-bottom: 1rem; }
+.tag-sign { font-style: italic; margin: 1.1rem 0 0; padding-top: 0.9rem; border-top: 2px dashed #2a2722; }
+
+/* ---------- join ---------- */
+.cta { margin: 0.5rem 0 2.5rem; }
+.foot { font-size: 0.9rem; color: var(--muted); font-style: italic; margin: 0; }
+
+/* ---------- focus ---------- */
+:focus-visible { outline: 2px dashed var(--thread); outline-offset: 3px; }
+.tag :focus-visible { outline-color: #2a2722; }
+
+/* ---------- wide screens: copy left, apron right ---------- */
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  .panel { justify-content: center; }
+  .hero { justify-content: space-between; }
+  .copy {
+    width: min(46vw, 40rem);
+    padding: 4rem 3rem 4rem max(4rem, 7vw);
+    background: linear-gradient(to right, color-mix(in srgb, var(--bath) 80%, transparent) 55%, transparent);
+  }
+  .hero .copy { padding-bottom: 3.5rem; }
+  .wordmark { padding: 2rem max(3.5rem, 6.5vw) 0; font-size: clamp(8rem, 17vw, 18rem); }
+  h2 { font-size: clamp(3.5rem, 6vw, 6rem); }
+}

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ragoût: slow-cooked workwear, New York</title>
+  <meta name="description" content="Condemned commercial kitchen aprons rescued from New York laundry plants, low-water dyed and hand-mended for bakers, ceramicists and winemakers.">
+  <meta name="theme-color" content="#26292b">
+  <meta property="og:title" content="Ragoût">
+  <meta property="og:description" content="Slow-cooked workwear, rescued from the line and remade for the maker.">
+  <meta property="og:url" content="https://ragout.studio">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+  </script>
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <canvas id="bath" aria-hidden="true"></canvas>
+
+  <main>
+    <section class="panel hero" data-stage data-crumple="0.05" data-scour="0" data-dye="0" data-mend="0">
+      <h1 class="wordmark">Ragoût</h1>
+      <div class="copy">
+        <dl class="defs">
+          <div><dt>ragoût <span class="say">ra-GOO</span></dt><dd>A stew cooked slowly until the toughest cuts turn tender.</dd></div>
+          <div><dt>ragout <span class="say">RAG-out</span></dt><dd>Laundry-plant word for condemned linen headed to the grinder.</dd></div>
+        </dl>
+        <p class="lede">We rescue the second kind and treat it like the first: slow-cooked workwear from New York’s discarded kitchen aprons.</p>
+        <p class="hint">Scroll to cook it. Press and hold the apron to crumple it.</p>
+      </div>
+    </section>
+
+    <section class="panel step" data-stage data-crumple="0.05" data-scour="0" data-dye="0" data-mend="0">
+      <div class="copy">
+        <p class="num">1</p>
+        <h2>Rescue</h2>
+        <p>Commercial linen plants in Long Island City, Maspeth and the Bronx condemn poly-cotton bib aprons for baked-on grease and small burns. We buy them by the pound before they’re baled into wipers.</p>
+      </div>
+    </section>
+
+    <section class="panel step" data-stage data-crumple="0.05" data-scour="1" data-dye="0" data-mend="0">
+      <div class="copy">
+        <p class="num">2</p>
+        <h2>Scour</h2>
+        <p>One hot wash with Synthrapol and soda ash strips the grease. It’s the only step that spends heat, and the runoff goes through a Filtrol 160 microfiber filter before it reaches a drain.</p>
+      </div>
+    </section>
+
+    <section class="panel step" data-stage data-crumple="1" data-scour="1" data-dye="0" data-mend="0">
+      <div class="copy">
+        <p class="num">3</p>
+        <h2>Crumple</h2>
+        <p>Low water immersion. Each apron is packed tight into a small container instead of a 30:1 vat, using up to 80% less water. The folds become resists.</p>
+      </div>
+    </section>
+
+    <section class="panel step" data-stage data-crumple="1" data-scour="1" data-dye="1" data-mend="0">
+      <div class="copy">
+        <p class="num">4</p>
+        <h2>Dye</h2>
+        <p>Fiber-reactive dye bonds to the 35% cotton at room temperature, with no heating. The polyester refuses it, and that refusal is the heathered, mottled surface.</p>
+      </div>
+    </section>
+
+    <section class="panel step" data-stage data-crumple="0.06" data-scour="1" data-dye="1" data-mend="0">
+      <div class="copy">
+        <p class="num">5</p>
+        <h2>Unfold</h2>
+        <p>Every crease leaves a record. No two aprons come out of the bath alike.</p>
+      </div>
+    </section>
+
+    <section class="panel step" data-stage data-crumple="0.06" data-scour="1" data-dye="1" data-mend="1">
+      <div class="copy">
+        <p class="num">6</p>
+        <h2>Mend</h2>
+        <p>Burn holes get a patch and heavy cotton sashiko. Melted polyester ties are replaced with cotton twill tape. The damage stays visible.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="colorways" data-stage data-crumple="0.06">
+      <div class="copy">
+        <h2>Synthetic dye, natural names</h2>
+        <p>Each colorway is a room-temperature fiber-reactive mix tuned to sit near a natural dye’s color, without the boiling water and metal mordants natural dyeing needs. Tap one to re-dye the apron.</p>
+        <div class="swatches" id="swatches"></div>
+      </div>
+    </section>
+
+    <section class="panel" data-stage data-crumple="0.06">
+      <div class="copy">
+        <h2>Wash it less</h2>
+        <p>A white apron shows every smear, so it goes in the wash every shift. Mottled, over-dyed cloth takes the day’s stains into its patina. Fewer washes means fewer polyester microfibers shed into the water over the apron’s second life.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="effluent" data-stage data-crumple="0.06">
+      <div class="copy">
+        <h2>Nothing basic goes down the drain</h2>
+        <p>Fiber-reactive dye needs soda ash, which leaves the bath around pH 10.5 to 11. Before disposal, every bath is brought back to 6.5–8.5 with food-grade citric acid. Try it.</p>
+        <div class="ph">
+          <div class="ph-top">
+            <span class="strip" aria-hidden="true"><span class="pad" id="phPad"></span></span>
+            <p class="ph-read"><span class="ph-unit">pH</span> <span class="ph-val" id="phVal">10.8</span></p>
+          </div>
+          <p class="ph-status" id="phStatus" aria-live="polite"></p>
+          <div class="ph-actions">
+            <button type="button" id="phDose">Add citric acid</button>
+            <button type="button" id="phReset" class="quiet">Start a new bath</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-stage data-crumple="0.06">
+      <div class="copy">
+        <figure class="tag">
+          <span class="eyelet" aria-hidden="true"></span>
+          <p class="tag-head">Ragoût / Rag-out</p>
+          <p>In the kitchen, a ragoût is a slow-cooked stew that turns the toughest cuts into something elevated. In the industrial laundry, ragout is condemned linen headed for the grinder.</p>
+          <p>We rescue these discarded workhorses. With low-water dyeing and visible hand-mending, the hospitality industry’s waste becomes rugged workwear. Every stain sinks into the patina; every tear is stitched heavy.</p>
+          <p class="tag-sign">Slow-cooked workwear, remade for the maker.</p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="panel" id="join" data-stage data-crumple="0.06">
+      <div class="copy">
+        <h2>First run: one 50 lb bag</h2>
+        <p>We’re seeding prototypes with New York bakers, ceramicists and natural winemakers, then opening a pop-up. Send us an email and we’ll tell you when and where.</p>
+        <a class="cta" href="mailto:hello@ragout.studio?subject=Pop-up%20list">Email us to join the list</a>
+        <p class="foot">Ragoût, New York City. Made from what the laundry threw out.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
