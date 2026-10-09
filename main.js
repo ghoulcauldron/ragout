@@ -7,15 +7,23 @@ THREE.ColorManagement.enabled = false;
 const root = document.documentElement;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Synthetic fiber-reactive mixes, named for the natural dye each one imitates.
+// Colorway System & Dye-Treatment Spec (Oct 8, 2026): 8-step ramps, palest to darkest.
+// bg = a dark complement or dark neighbor, kept low contrast so the apron carries the texture.
 const COLORWAYS = [
-  { name: 'Indigo',         after: 'after indigo vats',              hex: '#24365c' },
-  { name: 'Walnut hull',    after: 'after black walnut husks',       hex: '#4b3626' },
-  { name: 'Madder',         after: 'after madder root',              hex: '#8f3b2c' },
-  { name: 'Iron & oak gall',after: 'after iron-saddened tannin',     hex: '#2f2e2c' },
-  { name: 'Saddened weld',  after: 'after weld with an iron bath',   hex: '#5d5b30' },
-  { name: 'Logwood',        after: 'after logwood heartwood',        hex: '#3d2b47' },
+  { name: 'Cast Iron / Slate', desc: 'Muted stone-gray into iron-gray', bg: '#2a1e14',
+    ramp: ['#A8A79F','#A1A09B','#9A9A94','#94948E','#8E8E88','#6D6E6C','#4D5051','#2F3337'] },
+  { name: 'Fermented Olive / Matcha', desc: 'Gray-leaning matcha into deep olive drab', bg: '#2C1424',
+    ramp: ['#A6AC84','#9FA67C','#98A172','#909B6B','#8A9662','#6E794D','#555D39','#3E4426'] },
+  { name: 'Charred Crust / Raw Umber', desc: 'Toasted-bread brown into raw umber', bg: '#1f2225',
+    ramp: ['#B3916D','#AD8861','#A97F57','#A2774C','#9E6E40','#815A34','#664629','#4C321D'] },
+  { name: 'Spilled Espresso', desc: 'Mottled charcoal with warm sepia undertones', bg: '#2b2e31',
+    ramp: ['#775A46','#725642','#70513D','#6B4D37','#694832','#4E3829','#362921','#1E1A1A'] },
+  { name: 'Oxidized Guacamole', desc: 'Yellow-avocado green, browning in the veins', bg: '#2C1424',
+    ramp: ['#B3B67C','#ADB174','#A7AC6B','#A1A762','#9EA358','#868548','#706A39','#5B502B'] },
+  { name: 'Beet Salad', desc: 'Bruised magenta into near-black beet', bg: '#23271a',
+    ramp: ['#AF758A','#A86A82','#A25F79','#9D5471','#974868','#7A3755','#5F2640','#46162D'] },
 ];
+const DEFAULT_CW = 4; // Oxidized Guacamole, as on the Instagram profile
 
 /* ---------------- pH bath (works with or without WebGL) ---------------- */
 (function setupPH() {
@@ -48,7 +56,7 @@ const COLORWAYS = [
         : `Dose ${doses}. Still basic. Dissolve another 1–2 tbsp of citric acid, stir for 60 seconds, wait, re-test.`;
       dose.disabled = false;
     } else {
-      status.textContent = `Neutral after ${doses} doses. Now it’s pumped up through the Filtrol 160 to catch microfibers before it reaches a drain.`;
+      status.textContent = `Neutral after ${doses} doses. It gets filtered for microfibers, then it can go down the drain.`;
       dose.disabled = true;
     }
   }
@@ -59,15 +67,17 @@ const COLORWAYS = [
 })();
 
 /* ---------------- colorway buttons ---------------- */
-let onColorway = cw => root.style.setProperty('--dye', cw.hex);
+let onColorway = cw => root.style.setProperty('--dye', cw.ramp[4]);
 const swatchWrap = document.getElementById('swatches');
 COLORWAYS.forEach((cw, i) => {
   const b = document.createElement('button');
   b.type = 'button';
   b.className = 'swatch';
-  b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-  b.style.setProperty('--c', cw.hex);
-  b.innerHTML = `<span class="chip" aria-hidden="true"></span><span class="sw-name">${cw.name}</span><span class="sw-after">${cw.after}</span>`;
+  b.setAttribute('aria-pressed', i === DEFAULT_CW ? 'true' : 'false');
+  b.style.setProperty('--c', cw.ramp[4]);
+  b.style.setProperty('--c-pale', cw.ramp[0]);
+  b.style.setProperty('--c-deep', cw.ramp[7]);
+  b.innerHTML = `<span class="chip" aria-hidden="true"></span><span class="sw-name">${cw.name}</span><span class="sw-after">${cw.desc}</span>`;
   b.addEventListener('click', () => {
     swatchWrap.querySelectorAll('.swatch').forEach(s => s.setAttribute('aria-pressed', 'false'));
     b.setAttribute('aria-pressed', 'true');
@@ -75,7 +85,7 @@ COLORWAYS.forEach((cw, i) => {
   });
   swatchWrap.appendChild(b);
 });
-root.style.setProperty('--dye', COLORWAYS[0].hex);
+root.style.setProperty('--dye', COLORWAYS[DEFAULT_CW].ramp[4]);
 
 /* ---------------- the apron ---------------- */
 const canvas = document.getElementById('bath');
@@ -103,8 +113,8 @@ function startScene(renderer) {
     uMend: { value: 0 }, uRecolor: { value: 1 }, uPress: { value: 0 },
     uPointer: { value: new THREE.Vector2(0.5, 0.5) }, uSeed: { value: 3.7 },
     uSize: { value: new THREE.Vector2(W, H) }, uHole: { value: new THREE.Vector2(0.62, 0.33) },
-    uDyeColor: { value: new THREE.Color(COLORWAYS[0].hex) },
-    uPrevColor: { value: new THREE.Color(COLORWAYS[0].hex) },
+    uRamp: { value: COLORWAYS[DEFAULT_CW].ramp.map(h => new THREE.Color(h)) },
+    uPrevRamp: { value: COLORWAYS[DEFAULT_CW].ramp.map(h => new THREE.Color(h)) },
     uMotion: { value: reduceMotion ? 0 : 1 },
   };
   const segs = coarse ? [150, 195] : [220, 286];
@@ -112,7 +122,9 @@ function startScene(renderer) {
     new THREE.PlaneGeometry(W, H, segs[0], segs[1]),
     new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms: u, side: THREE.DoubleSide, transparent: true })
   );
+  mesh.frustumCulled = false;
   group.add(mesh);
+  const prevBg = new THREE.Color(COLORWAYS[DEFAULT_CW].bg), nextBg = prevBg.clone();
   scene.add(new THREE.AmbientLight(0xffffff, 0.45));
   const sun = new THREE.DirectionalLight(0xffffff, 0.9);
   sun.position.set(-2, 3, 3);
@@ -131,11 +143,13 @@ function startScene(renderer) {
   group.add(proxy);
 
   onColorway = cw => {
-    const cur = u.uPrevColor.value.clone().lerp(u.uDyeColor.value, u.uRecolor.value);
-    u.uPrevColor.value.copy(cur);
-    u.uDyeColor.value.set(cw.hex);
+    const r = u.uRecolor.value;
+    u.uPrevRamp.value.forEach((c, i) => c.lerp(u.uRamp.value[i], r));
+    u.uRamp.value.forEach((c, i) => c.set(cw.ramp[i]));
+    prevBg.lerp(nextBg, r);
+    nextBg.set(cw.bg);
     u.uRecolor.value = 0;
-    root.style.setProperty('--dye', cw.hex);
+    root.style.setProperty('--dye', cw.ramp[4]);
   };
 
   /* layout: apron upper on phones, right on wide screens */
@@ -180,6 +194,7 @@ function startScene(renderer) {
   addEventListener('pointermove', e => { mouse = e.pointerType === 'mouse'; hit(e); }, { passive: true });
   addEventListener('pointerdown', e => { mouse = e.pointerType === 'mouse'; hit(e); pressing = true; }, { passive: true });
   ['pointerup', 'pointercancel', 'blur'].forEach(n => addEventListener(n, () => { pressing = false; }));
+  addEventListener('contextmenu', e => { if (hovering) e.preventDefault(); }); // long-press = crumple, not a menu
 
   /* scroll stages */
   const sections = [...document.querySelectorAll('[data-stage]')];
@@ -199,8 +214,8 @@ function startScene(renderer) {
   u.uCrumple.value = t0.crumple; u.uScour.value = t0.scour; u.uDye.value = t0.dye; u.uMend.value = t0.mend;
 
   const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
-  const steel = new THREE.Color('#26292b'), dark = new THREE.Color('#0e0d0c');
-  const cur = new THREE.Color(), bath = new THREE.Color(), bg = new THREE.Color();
+  const steel = new THREE.Color('#26292b');
+  const bath = new THREE.Color(), bg = new THREE.Color();
   let lastHex = '', ft = 0, fn = 0;
   const clock = new THREE.Clock();
   const kk = reduceMotion ? 6 : 1;
@@ -214,8 +229,10 @@ function startScene(renderer) {
     u.uDye.value = damp(u.uDye.value, tg.dye, 1.3 * kk, dt);
     u.uMend.value = damp(u.uMend.value, tg.mend, 1.2 * kk, dt);
     u.uRecolor.value = damp(u.uRecolor.value, 1, 1.4 * kk, dt);
-    const pressT = pressing && hovering ? 1 : (hovering && mouse ? 0.3 : 0);
-    u.uPress.value = damp(u.uPress.value, pressT, 5, dt);
+    // hold to crumple (deepens the longer you hold), release to let it fall back flat
+    const holding = pressing && hovering;
+    const pressT = holding ? 1.5 : (hovering && mouse ? 0.25 : 0);
+    u.uPress.value = damp(u.uPress.value, pressT, holding ? 1.6 : 3.2, dt);
     if (!reduceMotion) u.uTime.value = t;
 
     par.x = damp(par.x, par.tx, 2, dt); par.y = damp(par.y, par.ty, 2, dt);
@@ -224,12 +241,11 @@ function startScene(renderer) {
     group.rotation.y = m * Math.sin(t * 0.17) * 0.12 + par.x * 0.15 * m;
     group.rotation.z = -0.03 + u.uCrumple.value * 0.06;
     straps.scale.setScalar(1 - 0.14 * u.uCrumple.value);
-    strapMat.opacity = Math.max(0, 1 - u.uCrumple.value * 2.2);
+    strapMat.opacity = Math.max(0, 1 - u.uCrumple.value * 2.2 - Math.max(0, u.uPress.value - 0.3) * 1.2);
     straps.visible = strapMat.opacity > 0.01;
     strapMat.color.copy(polyTie).lerp(twillTape, Math.min(1, u.uMend.value * 1.4));
 
-    cur.copy(u.uPrevColor.value).lerp(u.uDyeColor.value, u.uRecolor.value);
-    bath.copy(cur).lerp(dark, 0.55);
+    bath.copy(prevBg).lerp(nextBg, u.uRecolor.value);
     bg.copy(steel).lerp(bath, u.uDye.value);
     renderer.setClearColor(bg);
     const hex = bg.getHexString();

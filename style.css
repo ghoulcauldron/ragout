@@ -29,6 +29,7 @@ body {
   display: block;
   z-index: 0;
   touch-action: pan-y;
+  -webkit-touch-callout: none;
 }
 .no-webgl #bath { display: none; }
 .no-webgl body {
@@ -42,6 +43,7 @@ main { position: relative; z-index: 1; }
 
 /* ---------- panels: text sits low on phones, left on wide screens ---------- */
 .panel {
+  -webkit-touch-callout: none;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -66,20 +68,27 @@ p { margin: 0 0 1rem; }
 
 /* ---------- hero ---------- */
 .hero { justify-content: space-between; }
-.wordmark {
-  font-size: clamp(6rem, 29vw, 17rem);
-  line-height: 0.8;
-  letter-spacing: -0.02em;
-  padding: calc(1.25rem + env(safe-area-inset-top, 0px)) 1rem 0;
-  color: #fff;
-  mix-blend-mode: difference;
+.logo {
+  margin: 0;
+  padding: calc(1.25rem + env(safe-area-inset-top, 0px)) 1.25rem 0;
   pointer-events: none;
 }
-.defs { margin: 0 0 1.25rem; display: grid; gap: 0.9rem; }
-.defs dt { font-weight: 500; font-size: 1.25rem; }
-.defs dt .say { font-style: italic; font-weight: 400; color: var(--muted); margin-left: 0.35rem; }
-.defs dd { margin: 0.1rem 0 0; color: var(--muted); line-height: 1.45; }
-.lede { font-size: 1.3rem; line-height: 1.45; }
+.logo img {
+  display: block;
+  width: min(92vw, 34rem);
+  height: auto;
+  filter: invert(1);           /* black master → white, then: */
+  mix-blend-mode: difference;  /* reads light on the bath, dark on the white apron */
+}
+.tagline {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.6rem, 11.5vw, 5rem);
+  line-height: 0.9;
+  margin-bottom: 0.9rem;
+  text-wrap: balance;
+}
+.lede { font-size: 1.2rem; line-height: 1.45; }
 .hint { font-style: italic; color: var(--muted); font-size: 1rem; margin: 0; }
 
 /* ---------- process ---------- */
@@ -121,8 +130,8 @@ p { margin: 0 0 1rem; }
   width: 2.25rem; height: 2.25rem;
   border-radius: 2px;
   background:
-    radial-gradient(circle at 30% 35%, color-mix(in srgb, var(--c) 55%, #e7e6e0) 0 18%, transparent 40%),
-    radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--c) 70%, black) 0 22%, transparent 48%),
+    radial-gradient(circle at 30% 35%, var(--c-pale) 0 20%, transparent 42%),
+    radial-gradient(circle at 72% 70%, var(--c-deep) 0 22%, transparent 48%),
     var(--c);
 }
 .sw-name { font-weight: 500; font-size: 1rem; line-height: 1.2; }
@@ -189,7 +198,7 @@ button.quiet {
   background: var(--bath);
   box-shadow: 0 0 0 3px #b9ae95;
 }
-.tag-head { font-family: var(--display); font-weight: 900; font-size: 1.9rem; line-height: 1; text-align: center; margin-bottom: 1rem; }
+.tag-logo { display: block; width: 70%; height: auto; margin: 0 auto 1.1rem; opacity: 0.88; }
 .tag-sign { font-style: italic; margin: 1.1rem 0 0; padding-top: 0.9rem; border-top: 2px dashed #2a2722; }
 
 /* ---------- join ---------- */
@@ -210,6 +219,8 @@ button.quiet {
     background: linear-gradient(to right, color-mix(in srgb, var(--bath) 80%, transparent) 55%, transparent);
   }
   .hero .copy { padding-bottom: 3.5rem; }
-  .wordmark { padding: 2rem max(3.5rem, 6.5vw) 0; font-size: clamp(8rem, 17vw, 18rem); }
+  .logo { padding: 2.5rem max(3.5rem, 6.5vw) 0; }
+  .logo img { width: min(40vw, 38rem); }
+  .tagline { font-size: clamp(3.5rem, 5.5vw, 5.5rem); }
   h2 { font-size: clamp(3.5rem, 6vw, 6rem); }
 }

@@ -1,4 +1,4 @@
-# Ragoût: ragout.studio (alpha)
+# Ragout: ragout.studio (alpha)
 
 Static landing page. No build step. Three.js (r160) loads from jsDelivr; everything else is in this folder.
 
@@ -7,18 +7,20 @@ index.html    page + copy
 style.css     layout, type, colors (the page background follows the dye)
 main.js       scene, scroll stages, colorways, pH widget
 shaders.js    the fabric: crumple, LWI dye, poly-cotton weave, sashiko
+logo.svg      lockup C (final), traced from ragout_logo_C_final.png
+og-image.png  link preview: lockup C in Oxidized Guacamole on deep beet
 favicon.svg
 vercel.json   clean URLs + basic headers
 ```
 
 ## How the apron works
-One noise field crumples the cloth (vertex shader) and decides where dye pools and where folds resist (fragment shader). When the apron unfolds, the dye pattern is the imprint of the crumple, like low water immersion. Only the "cotton" yarns take full dye, so it reads heathered. Each section in `index.html` sets a stage with `data-crumple`, `data-scour`, `data-dye`, `data-mend` (0 to 1).
+The dye follows the LWI recipe in the Colorway System & Dye-Treatment Spec: a warped vein field (three scales plus blotch), normalized, raised to 0.6 and quantized into the colorway's 8-step ramp. The same vein field lifts the fold ridges in 3D, so the dark veins sit on the creases. Press and hold deforms the actual mesh: the cloth gathers toward your finger and springs back on release. Each section in `index.html` sets a stage with `data-crumple`, `data-scour`, `data-dye`, `data-mend` (0 to 1).
 
-Edit colorways in `COLORWAYS` at the top of `main.js`.
+Colorways (ramps and backgrounds) live in `COLORWAYS` at the top of `main.js`. When real swatch values arrive, replace the ramps there.
 
 ## Upload from Android
 1. Unzip `ragout-alpha.zip` (Files app: tap the zip, Extract).
-2. github.com/ghoulcauldron/ragout, Add file, Upload files, select all 7 files, Commit.
+2. github.com/ghoulcauldron/ragout, Add file, Upload files, select all files, Commit.
 
 ## Deploy on Vercel
 1. vercel.com, Add New, Project, import `ghoulcauldron/ragout`.
@@ -31,4 +33,4 @@ Edit colorways in `COLORWAYS` at the top of `main.js`.
 
 ## Before launch
 - `hello@ragout.studio` in the join section is a placeholder. Set up the address (Cloudflare Email Routing works) or change the link.
-- Add an Instagram link and a 1200x630 `og-image.jpg` when ready.
+- Add an Instagram link when ready.
