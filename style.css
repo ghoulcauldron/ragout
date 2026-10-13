@@ -148,7 +148,7 @@ p { margin: 0 0 0.85rem; }
   margin: 0 0 0.15rem;
 }
 .cw-desc { font-style: italic; color: var(--muted); font-size: 0.95rem; margin: 0; }
-.cw-intro { color: var(--muted); }
+.cw-intro { color: var(--muted); margin-bottom: 0.3rem; }
 
 /* ---------- pH bath ---------- */
 .ph { margin-top: 1rem; }
