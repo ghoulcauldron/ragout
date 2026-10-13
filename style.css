@@ -107,17 +107,10 @@ p { margin: 0 0 0.85rem; }
 }
 
 /* ---------- colorway picker ---------- */
-#colorways .copy { display: flex; flex-direction: column; }
-/* narrow: picker right under the apron, then its name, then the section text */
-#colorways .picker     { order: 1; }
-#colorways .cw-caption { order: 2; }
-#colorways h2          { order: 3; }
-#colorways .cw-intro   { order: 4; }
-
 .picker {
   display: flex;
   gap: 0.15rem;
-  margin: 0 0 0.6rem -0.55rem;   /* optically align first chip with the text edge */
+  margin: 0.2rem 0 0.5rem -0.55rem;   /* optically align first chip with the text edge */
 }
 .pick {
   width: 2.75rem; height: 2.75rem;   /* 44px tap target */
@@ -146,7 +139,7 @@ p { margin: 0 0 0.85rem; }
 .pick:focus-visible { outline: none; }
 .pick:focus-visible .chip { outline: 2px solid var(--thread); outline-offset: 3px; }
 
-.cw-caption { margin-bottom: 1.25rem; min-height: 3.6em; }
+.cw-caption { margin-bottom: 0.9rem; min-height: 3.2em; }
 .cw-name {
   font-family: var(--display);
   font-weight: 700;
@@ -200,7 +193,7 @@ button.quiet {
 /* ---------- hangtag ---------- */
 .tag {
   position: relative;
-  margin: 0;
+  margin: 0 auto;
   max-width: 21rem;
   background: #e3dccb;
   color: #2a2722;
@@ -245,19 +238,9 @@ button.quiet {
   .logo img { width: min(26vw, 22rem); }
   h2, .tagline { font-size: clamp(2.25rem, 3.2vw, 3.25rem); }
 
-  /* picker: a slim vertical strip right of the apron; caption centered under it */
+  /* picker: a horizontal row under the heading; caption centered under the apron */
   #colorways .copy { display: block; }
   #colorways { height: 100svh; }
-  .picker {
-    position: absolute;
-    left: min(calc(var(--apron-tie-r) + 1.25rem), calc(100vw - 4rem));
-    top: var(--apron-cy);
-    transform: translateY(-50%);
-    flex-direction: column;
-    gap: 0.1rem;
-    margin: 0;
-  }
-  .chip { width: 1.1rem; height: 2.1rem; }
   .cw-caption {
     position: absolute;
     left: var(--apron-cx);
@@ -270,3 +253,35 @@ button.quiet {
   .cw-name { font-size: 1.6rem; }
 }
 .nw { white-space: nowrap; }
+
+/* tag sits centered in its column */
+.copy:has(> .tag) { display: flex; justify-content: center; }
+.copy:has(> .tag) > .tag { flex: 0 1 21rem; }
+
+/* ---------- small logo, top right, once the hero logo scrolls away ---------- */
+.mini-logo {
+  position: fixed;
+  z-index: 5;
+  top: calc(0.9rem + env(safe-area-inset-top, 0px));
+  right: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+.mini-logo img {
+  display: block;
+  width: 5.5rem;
+  height: auto;
+  filter: invert(1);
+  mix-blend-mode: difference;
+}
+.scrolled .mini-logo {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease, visibility 0s;
+}
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  .mini-logo { top: 1.5rem; right: max(1.5rem, 2.5vw); }
+  .mini-logo img { width: 7.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { .mini-logo { transition: none; } }

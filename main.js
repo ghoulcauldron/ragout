@@ -25,6 +25,18 @@ const COLORWAYS = [
 ];
 const DEFAULT_CW = 4; // Oxidized Guacamole, as on the Instagram profile
 
+/* ---------------- small logo appears once the hero logo is gone ---------------- */
+(function miniLogo() {
+  const big = document.querySelector('.logo');
+  const mini = document.querySelector('.mini-logo');
+  if (!big || !mini || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(([e]) => {
+    const gone = !e.isIntersecting;
+    root.classList.toggle('scrolled', gone);
+    mini.tabIndex = gone ? 0 : -1;
+  }).observe(big);
+})();
+
 /* ---------------- pH bath (works with or without WebGL) ---------------- */
 (function setupPH() {
   const val = document.getElementById('phVal');
