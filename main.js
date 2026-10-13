@@ -66,25 +66,32 @@ const DEFAULT_CW = 4; // Oxidized Guacamole, as on the Instagram profile
   start();
 })();
 
-/* ---------------- colorway buttons ---------------- */
+/* ---------------- colorway picker ---------------- */
 let onColorway = cw => root.style.setProperty('--dye', cw.ramp[4]);
 const swatchWrap = document.getElementById('swatches');
+const cwName = document.getElementById('cwName');
+const cwDesc = document.getElementById('cwDesc');
+function showCaption(cw) { cwName.textContent = cw.name; cwDesc.textContent = cw.desc; }
 COLORWAYS.forEach((cw, i) => {
   const b = document.createElement('button');
   b.type = 'button';
-  b.className = 'swatch';
+  b.className = 'pick';
+  b.setAttribute('aria-label', cw.name);
   b.setAttribute('aria-pressed', i === DEFAULT_CW ? 'true' : 'false');
   b.style.setProperty('--c', cw.ramp[4]);
   b.style.setProperty('--c-pale', cw.ramp[0]);
   b.style.setProperty('--c-deep', cw.ramp[7]);
-  b.innerHTML = `<span class="chip" aria-hidden="true"></span><span class="sw-name">${cw.name}</span><span class="sw-after">${cw.desc}</span>`;
+  b.innerHTML = '<span class="chip" aria-hidden="true"></span>';
   b.addEventListener('click', () => {
-    swatchWrap.querySelectorAll('.swatch').forEach(s => s.setAttribute('aria-pressed', 'false'));
+    if (b.getAttribute('aria-pressed') === 'true') return;
+    swatchWrap.querySelectorAll('.pick').forEach(s => s.setAttribute('aria-pressed', 'false'));
     b.setAttribute('aria-pressed', 'true');
+    showCaption(cw);
     onColorway(cw);
   });
   swatchWrap.appendChild(b);
 });
+showCaption(COLORWAYS[DEFAULT_CW]);
 root.style.setProperty('--dye', COLORWAYS[DEFAULT_CW].ramp[4]);
 
 /* ---------------- the apron ---------------- */
@@ -154,6 +161,7 @@ function startScene(renderer) {
 
   /* layout: apron upper on phones, right on wide screens */
   let lastW = 0, lastH = 0;
+  const wideMQ = matchMedia('(min-width: 900px) and (min-aspect-ratio: 1/1)');
   function layout(force) {
     const w = innerWidth, h = innerHeight;
     if (!force && coarse && w === lastW && Math.abs(h - lastH) < 140) return; // ignore URL-bar jiggle
@@ -164,16 +172,33 @@ function startScene(renderer) {
     camera.updateProjectionMatrix();
     const t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     const FH = 3.3, FW = 2.5, cy = -0.33;   // full height incl. neck loop, width incl. ties
+    const vh = d => 2 * d * t, vw = d => 2 * d * t * aspect;
     let d, ox = 0, oy = cy;
-    if (aspect < 0.85) {
-      d = Math.max(FH / (0.58 * 2 * t), FW / (0.94 * 2 * t * aspect));
-      oy += 2 * d * t * 0.19;
+    if (wideMQ.matches) {
+      // apron on the right ~36% of the screen, clear of the left text column
+      d = Math.max(FH / (0.76 * 2 * t), FW / (0.36 * 2 * t * aspect));
+      ox = vw(d) * 0.22;
+      oy += vh(d) * 0.04;
     } else {
-      d = Math.max(FH / (0.86 * 2 * t), FW / (0.46 * 2 * t * aspect));
-      ox = 2 * d * t * aspect * 0.2;
+      // apron in the top ~56%, text below it
+      d = Math.max(FH / (0.56 * 2 * t), FW / (0.92 * 2 * t * aspect));
+      oy += vh(d) * 0.2;
     }
     camera.position.set(0, 0, d);
     group.position.set(ox, oy, 0);
+    camera.updateMatrixWorld();
+
+    // publish the apron's on-screen box so the picker and caption can sit beside/below it
+    const toPx = (x, y) => {
+      const v = new THREE.Vector3(x + ox, y + oy, 0).project(camera);
+      return [(v.x + 1) / 2 * w, (1 - v.y) / 2 * h];
+    };
+    const [l, top] = toPx(-W / 2, 1.96), [r, bot] = toPx(W / 2, -H / 2);
+    const [, mid] = toPx(0, 0);
+    const [tieR] = toPx(1.24, 0);
+    const set = (k, v) => root.style.setProperty(k, Math.round(v) + 'px');
+    set('--apron-l', l); set('--apron-r', r); set('--apron-tie-r', tieR);
+    set('--apron-t', top); set('--apron-b', bot); set('--apron-cx', (l + r) / 2); set('--apron-cy', mid);
   }
   layout(true);
   addEventListener('resize', () => layout(false));

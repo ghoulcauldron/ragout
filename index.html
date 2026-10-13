@@ -29,7 +29,7 @@
     <section class="panel hero" data-stage data-crumple="0.05" data-scour="0" data-dye="0" data-mend="0">
       <h1 class="logo"><img src="./logo.svg" alt="Ragout" width="3781" height="1618"></h1>
       <div class="copy">
-        <p class="tagline">Tough cuts, slow-cooked.</p>
+        <p class="tagline">Tough cuts, <span class="nw">slow-cooked.</span></p>
         <p class="lede">Kitchen aprons the laundry gave up on, dyed and mended by hand in New York.</p>
         <p class="hint">Scroll to cook it. Press and hold the apron to crumple it.</p>
       </div>
@@ -87,8 +87,12 @@
     <section class="panel" id="colorways" data-stage data-crumple="0.06">
       <div class="copy">
         <h2>Colors from the stove</h2>
-        <p>Six muted colorways, each named for something cooking. Tap one to re-dye the apron.</p>
-        <div class="swatches" id="swatches"></div>
+        <p class="cw-intro">Six muted colorways, each named for something cooking. Tap one to re-dye the apron.</p>
+        <div class="picker" id="swatches" role="group" aria-label="Colorways"></div>
+        <div class="cw-caption" aria-live="polite">
+          <p class="cw-name" id="cwName"></p>
+          <p class="cw-desc" id="cwDesc"></p>
+        </div>
       </div>
     </section>
 
